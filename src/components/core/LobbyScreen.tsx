@@ -82,6 +82,7 @@ export function LobbyScreen({ mode, onBack }: LobbyScreenProps) {
       onError: (msg) => { setErrorMsg(msg); setStatus('error'); },
       onPlayerLeft: () => {},
       onDisconnected: () => { setStatus('error'); setErrorMsg('Disconnected from server'); },
+      onMessage: (msg) => useGameStore.getState().receiveNetMsg(msg),
     });
 
     netRef.current = net;

@@ -29,6 +29,8 @@ type Callbacks = {
   onError: (msg: string) => void;
   onPlayerLeft: (peerId: string) => void;
   onDisconnected: () => void;
+  /** Called on the host when a client sends a game action (bid/play/trump) */
+  onMessage?: (msg: NetMsg) => void;
 };
 
 function generateRoomId(): string {
@@ -180,12 +182,14 @@ export class GameNetwork {
      CONNECTION MANAGEMENT
      ══════════════════════════════════════════════ */
   private addConnection(conn: DataConnection) {
-    conn.on('open', () => {
-      conn.on('data', (data) => this.handleMessage(conn, data as NetMsg));
-      conn.on('close', () => this.handleDisconnect(conn.peer));
-      conn.on('error', () => this.handleDisconnect(conn.peer));
-    });
     this.connections.set(conn.peer, conn);
+    // Register handlers immediately — do NOT wrap in conn.on('open').
+    // On host-side (incoming) connections conn.open is false, but PeerJS allows
+    // registering 'data' before 'open'. If we wait for 'open', we miss the
+    // 'join' message that clients send the instant their own 'open' fires.
+    conn.on('data', (data) => this.handleMessage(conn, data as NetMsg));
+    conn.on('close', () => this.handleDisconnect(conn.peer));
+    conn.on('error', () => this.handleDisconnect(conn.peer));
   }
 
   private handleDisconnect(peerId: string) {
@@ -212,7 +216,8 @@ export class GameNetwork {
           avatar,
           isHost: false,
         };
-        this.lobbyPlayers.push(player);
+        // Create a new array so React detects the reference change and re-renders
+        this.lobbyPlayers = [...this.lobbyPlayers, player];
         this.broadcastLobby();
         this.broadcast({ type: 'playerJoined', player });
         break;
@@ -239,7 +244,10 @@ export class GameNetwork {
       case 'bid':
       case 'play':
       case 'trump':
-        // Host receives these from clients — handled by game store
+        // Forward to game store via onMessage callback
+        if (this.role === 'host') {
+          this.callbacks.onMessage?.(msg);
+        }
         break;
 
       case 'playerJoined':
@@ -261,7 +269,8 @@ export class GameNetwork {
       roomId: this.roomId,
     };
     this.broadcast(msg);
-    this.callbacks.onLobby(this.lobbyPlayers, this.myId, this.roomId);
+    // Spread to always give React a new array reference, preventing stale-render bail-outs
+    this.callbacks.onLobby([...this.lobbyPlayers], this.myId, this.roomId);
   }
 
   private filterStateForPlayer(state: GameState, playerId: string): GameState {
