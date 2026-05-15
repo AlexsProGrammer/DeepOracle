@@ -1,0 +1,195 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #060d1f;
+  --foreground: #e0f2fe;
+  --card: #0c1e3a;
+  --card-foreground: #e0f2fe;
+  --popover: #0c1e3a;
+  --popover-foreground: #e0f2fe;
+  --primary: #0ea5e9;
+  --primary-foreground: #f0f9ff;
+  --secondary: #112240;
+  --secondary-foreground: #e0f2fe;
+  --muted: #112240;
+  --muted-foreground: #7dd3fc;
+  --accent: #164e63;
+  --accent-foreground: #e0f2fe;
+  --destructive: #f87171;
+  --border: rgba(14, 165, 233, 0.3);
+  --input: rgba(14, 165, 233, 0.3);
+  --ring: #22d3ee;
+  --chart-1: #0ea5e9;
+  --chart-2: #fbbf24;
+  --chart-3: #34d399;
+  --chart-4: #f87171;
+  --chart-5: #a78bfa;
+  --sidebar: #0c1e3a;
+  --sidebar-foreground: #e0f2fe;
+  --sidebar-primary: #0ea5e9;
+  --sidebar-primary-foreground: #f0f9ff;
+  --sidebar-accent: #112240;
+  --sidebar-accent-foreground: #e0f2fe;
+  --sidebar-border: rgba(14, 165, 233, 0.3);
+  --sidebar-ring: #22d3ee;
+}
+
+.dark {
+  --background: #060d1f;
+  --foreground: #e0f2fe;
+  --card: #0c1e3a;
+  --card-foreground: #e0f2fe;
+  --popover: #0c1e3a;
+  --popover-foreground: #e0f2fe;
+  --primary: #0ea5e9;
+  --primary-foreground: #f0f9ff;
+  --secondary: #112240;
+  --secondary-foreground: #e0f2fe;
+  --muted: #112240;
+  --muted-foreground: #7dd3fc;
+  --accent: #164e63;
+  --accent-foreground: #e0f2fe;
+  --destructive: #f87171;
+  --border: rgba(14, 165, 233, 0.3);
+  --input: rgba(14, 165, 233, 0.3);
+  --ring: #22d3ee;
+  --chart-1: #0ea5e9;
+  --chart-2: #fbbf24;
+  --chart-3: #34d399;
+  --chart-4: #f87171;
+  --chart-5: #a78bfa;
+  --sidebar: #0c1e3a;
+  --sidebar-foreground: #e0f2fe;
+  --sidebar-primary: #0ea5e9;
+  --sidebar-primary-foreground: #f0f9ff;
+  --sidebar-accent: #112240;
+  --sidebar-accent-foreground: #e0f2fe;
+  --sidebar-border: rgba(14, 165, 233, 0.3);
+  --sidebar-ring: #22d3ee;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(6, 13, 31, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.5);
+}
+
+/* Card glow animations */
+@keyframes cardGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(251, 191, 36, 0.5);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(14, 165, 233, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.6);
+  }
+}
+
+/* Deep ocean ambient background */
+.magical-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(251, 191, 36, 0.03) 0%, transparent 50%);
+}
+
+/* Ensure game table is always dark */
+.dark .game-table-bg {
+  background: linear-gradient(180deg, #060d1f 0%, #0a1628 30%, #0c1e3a 70%, #060d1f 100%);
+}
