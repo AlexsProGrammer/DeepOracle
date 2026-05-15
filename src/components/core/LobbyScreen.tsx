@@ -52,6 +52,19 @@ export function LobbyScreen({ mode, onBack }: LobbyScreenProps) {
   const [shareLink, setShareLink] = useState('');
   const [showRules, setShowRules] = useState(false);
 
+  // Generate particle positions once on the client to avoid SSR/client hydration mismatch
+  const [particles, setParticles] = useState<{ left: number; top: number; duration: number; delay: number }[]>([]);
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 20 }, () => ({
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        duration: 3 + Math.random() * 4,
+        delay: Math.random() * 3,
+      }))
+    );
+  }, []);
+
   const netRef = useRef<GameNetwork | null>(null);
 
   const cleanup = useCallback(() => {
@@ -173,13 +186,13 @@ export function LobbyScreen({ mode, onBack }: LobbyScreenProps) {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 20 }).map((_, i) => (
+        {particles.map((p, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"
-            style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+            style={{ left: `${p.left}%`, top: `${p.top}%` }}
             animate={{ y: [0, -20, 0], opacity: [0.1, 0.4, 0.1] }}
-            transition={{ duration: 3 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3 }}
+            transition={{ duration: p.duration, repeat: Infinity, delay: p.delay }}
           />
         ))}
       </div>

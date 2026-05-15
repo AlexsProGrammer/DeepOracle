@@ -345,7 +345,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
 /* ─── Auto-broadcast: host sends state to clients on every store change ─── */
 useGameStore.subscribe((state) => {
   if (state.mode === 'multiplayer' && state.isHost && state.network && state.round) {
-    state.network.broadcastState(state);
+    // Extract only plain GameState fields — the full GameStore also contains the
+    // GameNetwork class instance and action functions which binarypack cannot serialize.
+    const gameState: GameState = {
+      phase: state.phase,
+      settings: state.settings,
+      players: state.players,
+      round: state.round,
+      roundScores: state.roundScores,
+      deck: state.deck,
+      totalRounds: state.totalRounds,
+      selectedCardId: state.selectedCardId,
+      bidValues: state.bidValues,
+      lastTrick: state.lastTrick,
+      message: state.message,
+    };
+    state.network.broadcastState(gameState);
   }
 });
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,6 +31,19 @@ export function StartScreen({ onStartGame, onMultiplayer }: StartScreenProps) {
   const [strictFollow, setStrictFollow] = useState(false);
   const [showRules, setShowRules] = useState(false);
 
+  // Generate particle positions once on the client to avoid SSR/client hydration mismatch
+  const [particles, setParticles] = useState<{ left: number; top: number; duration: number; delay: number }[]>([]);
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 30 }, () => ({
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        duration: 3 + Math.random() * 4,
+        delay: Math.random() * 3,
+      }))
+    );
+  }, []);
+
   const opponents = AI_AVATARS.slice(0, playerCount - 1).map((avatar, i) => ({
     name: AI_NAMES[i],
     avatar,
@@ -44,13 +57,13 @@ export function StartScreen({ onStartGame, onMultiplayer }: StartScreenProps) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: 30 }).map((_, i) => (
+          {particles.map((p, i) => (
             <motion.div
               key={i}
               className="absolute w-1 h-1 bg-cyan-400/30 rounded-full"
-              style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+              style={{ left: `${p.left}%`, top: `${p.top}%` }}
               animate={{ y: [0, -30, 0], opacity: [0.2, 0.8, 0.2], scale: [1, 1.5, 1] }}
-              transition={{ duration: 3 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3 }}
+              transition={{ duration: p.duration, repeat: Infinity, delay: p.delay }}
             />
           ))}
         </div>
@@ -152,13 +165,13 @@ export function StartScreen({ onStartGame, onMultiplayer }: StartScreenProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 30 }).map((_, i) => (
+        {particles.map((p, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-cyan-400/30 rounded-full"
-            style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+            style={{ left: `${p.left}%`, top: `${p.top}%` }}
             animate={{ y: [0, -30, 0], opacity: [0.2, 0.8, 0.2], scale: [1, 1.5, 1] }}
-            transition={{ duration: 3 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3 }}
+            transition={{ duration: p.duration, repeat: Infinity, delay: p.delay }}
           />
         ))}
       </div>
